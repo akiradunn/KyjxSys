@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Brave勇气</title>
+<!--jQuery引用-->
+<script src="files/js/jquery-3.3.1.js"></script>
+<script src="files/js/my.js"></script>
+<!-- Bootstrap core CSS&&JS -->
+<link href="/bootstrap-3.3.7/docs/dist/css/bootstrap.min.css"
+	rel="stylesheet">
+<script src="/bootstrap-3.3.7/docs/dist/js/bootstrap.min.js"></script>
+<!-- vue.js core -->
+<script src="https://cdn.bootcss.com/vue/2.4.2/vue.min.js"></script>
+<script type="text/javascript">
+	function checkRoleDeal(result) {
+		var warning = document.getElementById('reminder');
+		var user = result;
+		if (user.role == "ROLE_ADMIN") {
+			warning.innerHTML = "管理员:" + user.username;
+		} else {
+			warning.innerHTML = "用户:" + user.username;
+		}
+		warning.style.color = "red";
+	}
+</script>
+<script type="text/javascript">
+	function chooseShow(show) {//页面切换
+		var status = document.getElementById(show).style.display;
+		if(status == "none"){
+			document.getElementById("myInfo").style.display = "none";
+			document.getElementById("myClass").style.display = "none";
+			document.getElementById("classSquare").style.display = "none";
+			document.getElementById("searchResults").style.display = "none";
+			document.getElementById(show).style.display = "";	
+		}
+	}
+</script>
+
+<script type="text/javascript">
+	function showMyInfo() {//查看个人信息
+		chooseShow("myInfo");
+		var username = document.getElementById('reminder').text.split(":")[1];//根据reminder标签获取当前登录名
+		$.ajax({
+			type : "GET", //提交的方法
+			url : "/api/users/others/"+username,//提交的地址 
+			async : true,
+			success : function(retResult) {
+				new Vue({
+    				el: '#vueMyInfo',
+    				data: {
+        				myInfoStore: retResult
+    				}
+				});
+				document.getElementById("myInfoReminder").innerHTML = "--------以下是您的个人信息--------";
+			},
+			error : function(retResult) {
+				alert("Request error!");
+			}
+		});
+	}
+</script>
+
+<script type="text/javascript">
+	function showMyClass(){//查询我的课题
+		chooseShow("myClass");
+		var username = document.getElementById('reminder').text.split(":")[1];//根据reminder标签获取当前登录名
+		$.ajax({
+			type : "GET", //提交的方法
+			url : "/api/kyxm/others/"+username,//提交的地址 
+			async : true,
+			success : function(retResult) { 
+				new Vue({
+    				el: '#vueMyClass',
+    				data: {
+        				myClassStore: retResult
+    				}
+				});
+				document.getElementById("myClassReminder").innerHTML = "--------以下是您的课题信息--------";
+			},
+			error : function(retResult) {
+				alert("Request error!");
+			}
+		});
+	}
+</script>
+
+<script type="text/javascript">
+	function showClassSquare(){//查询课题广场
+		chooseShow("classSquare");
+		$.ajax({
+			type : "GET", //提交的方法
+			url : "/api/kyxm",
+			async : true,
+			success : function(retResult) {
+				new Vue({
+    				el: '#vueClassSquare',
+    				data: {
+        				classSquareStore: retResult
+    				}
+				});
+				if(retResult == "" || retResult == null){
+					document.getElementById("classSquareReminder").innerHTML = "一共有0条课题记录";
+				}else if(retResult instanceof Array){//返回的JSON数据可能是一个对象也可能是一个数组
+					 			document.getElementById("classSquareReminder").innerHTML = "一共有"+retResult.length+"条课题记录";
+						}
+				},
+			error : function(retResult) {
+				alert("Request error!");
+			}
+		});
+	}
+</script>
+
+
+<script type="text/javascript">
+	function showSearchResults() {//搜索结果
+		//alert("test");
+		chooseShow("searchResults");
+		//直接获取input元素的值不行,因为获取到的是页面加载之后,填写表单之前的元素的值，必然为空，获取输入的值要通过form表单进行获取
+		var k_name = document.getElementById("searchForm").k_name.value;
+		if(k_name == "" || k_name == null){
+			k_name = "blank";
+		}
+		$.ajax({
+			type : "GET", //提交的方法
+			url : "/api/kyxm/"+k_name,//提交的地址 
+			async : true,
+			success : function(retResult) {
+				new Vue({
+    				el: '#vueSearchResults',
+    				data: {
+        				searchResultsStore: retResult
+    				}
+				});
+				if(retResult == "" || retResult == null){
+					document.getElementById("searchResultsReminder").innerHTML = "一共有0条课题记录";
+				}else if(retResult instanceof Array){//返回的一个JSON数组
+					 			document.getElementById("searchResultsReminder").innerHTML = "一共有"+retResult.length+"条课题记录";
+						}
+				},
+				error : function(retResult) {
+					alert("Request error!");
+				}
+			});
+		}
+</script>
+</head>
+<body onload="checkUserRole()">
+	<!--container-->
+	<div class="container">
+		<div class="row clearfix">
+			<div class="col-md-12 column">
+				<!--nav-->
+				<nav class="navbar navbar-default navbar-fixed-top"
+					role="navigation">
+					<div class="navbar-header">
+						<button type="button" class="navbar-toggle" data-toggle="collapse"
+							data-target="#bs-example-navbar-collapse-1"></button>
+						<a class="navbar-brand" id="reminder" href="#"></a>
+					</div>
+					<div class="collapse navbar-collapse"
+						id="bs-example-navbar-collapse-1">
+						<ul class="nav navbar-nav">
+							<li><a href="javascript:void(0);" onclick="showMyInfo()">个人信息</a></li>
+							<li><a href="javascript:void(0);" onclick="showMyClass()">我的课题</a></li>
+							<li><a href="javascript:void(0);" onclick="showClassSquare()">课题广场</a></li>
+						</ul>
+						<form class="navbar-form navbar-left" id="searchForm" role="search">
+							<div class="form-group">
+								<input name="k_name" type="text" class="form-control" />
+							</div>
+							<button type="button" class="btn btn-default" onclick="showSearchResults()" >课题搜索</button>
+						</form>
+						<ul class="nav navbar-nav navbar-right">
+							<li><a href="/logout" style="color: red;">用户注销</a></li>
+						</ul>
+					</div>
+				</nav>
+				<!--/nav-->
+			</div>
+		</div>
+	</div>
+	<!--/container-->
+	<br>
+	<br>
+	<!-- 我的信息 -->
+	<div id="myInfo" style="display: none;" align="center">
+		<div class="panel panel-default">
+			<!-- Default panel contents -->
+			<div class="panel-heading" id="myInfoReminder"></div>
+			<!-- Table -->
+			<div id="vueMyInfo">
+			<table class="table">
+				<tr>
+					<th>名字</th>
+					<th>性别</th>
+					<th>职称</th>
+					<th>科研总分</th>
+				</tr>
+                	<tr v-for="temp in myInfoStore">
+                	<td>{{ temp.u_name }}</td>
+                    <td>{{ temp.u_sex }}</td>
+                    <td>{{ temp.u_identity }}</td>
+                    <td>{{ temp.u_wholePoints }}</td>
+                </tr>
+			</table>
+			</div>
+		</div>
+	</div>
+	<!-- /我的信息 -->
+
+	<!-- 我的课题 -->
+	<div id="myClass" style="display: none;" align="center">
+		<div class="panel panel-default">
+			<!-- Default panel contents -->
+			<div class="panel-heading" id="myClassReminder"></div>
+			<!-- Table -->
+			<div id="vueMyClass">
+			<table class="table">
+				<tr>
+					<th>课题名称</th>
+					<th>课题状态</th>
+					<th>课题积分</th>
+					<th>申报时间</th>
+					<th>立项时间</th>
+					<th>结项时间</th>
+					<th>积分申报</th>
+					<th>课题完成</th>
+				</tr>
+				<tr v-for="temp in myClassStore">
+                    <td>{{ temp.k_name  }}</td>
+                    <td>{{ temp.k_status  }}</td>
+                    <td>{{ temp.k_score  }}</td>
+                    <td>{{ temp.k_applyTime  }}</td>
+                    <td>{{ temp.k_setTime  }}</td>
+                    <td>{{ temp.k_endTime  }}</td>
+                    <td>{{ temp.k_scoreApplied  }}</td>
+                    <td>{{ temp.k_completed  }}</td>
+                </tr>
+			</table>
+			</div>
+		</div>
+	</div>
+	<!-- /我的课题 -->
+
+	<!-- 课题广场 -->
+	<div id="classSquare" style="display: none;" align="center">
+		<div class="panel panel-default">
+			<!-- Default panel contents -->
+			<div class="panel-heading" id="classSquareReminder"></div>
+			<!-- Table -->
+			<div id="vueClassSquare">
+				<table class="table">
+				<tr>
+					<th>课题名称</th>
+					<th>课题类别</th>
+					<th>科研积分</th>
+				</tr>
+				<tr v-for="temp in classSquareStore">
+                    <td>{{ temp.k_name  }}</td>
+                    <td>{{ temp.k_category  }}</td>
+                    <td>{{ temp.k_score  }}</td>
+                </tr>
+			</table>
+			</div>
+		</div>
+	</div>
+	<!-- /课题广场 -->
+
+	<!-- 搜索结果 -->
+	<div id="searchResults" style="display: none;" align="center">
+		<div class="panel panel-default" >
+			<!-- Default panel contents -->
+			<div class="panel-heading" id="searchResultsReminder"></div>
+			<!-- Table -->
+			<div id="vueSearchResults">
+			<table class="table">
+				<tr>
+					<th>课题名称</th>
+					<th>课题类别</th>
+					<th>科研积分</th>
+				</tr>
+				<tr v-for="temp in searchResultsStore">
+                    <td>{{ temp.k_name  }}</td>
+                    <td>{{ temp.k_category  }}</td>
+                    <td>{{ temp.k_score  }}</td>
+                </tr>
+			</table>
+		</div>
+	</div>
+	<!-- /搜索结果 -->
+</body>
+</html>
