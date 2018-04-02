@@ -13,31 +13,6 @@
 <!-- vue.js core -->
 <script src="https://cdn.bootcss.com/vue/2.4.2/vue.min.js"></script>
 <script type="text/javascript">
-	function checkRoleDeal(result) {
-		var warning = document.getElementById('reminder');
-		var user = result;
-		if (user.role == "ROLE_ADMIN") {
-			warning.innerHTML = "管理员:" + user.username;
-		} else {
-			warning.innerHTML = "用户:" + user.username;
-		}
-		warning.style.color = "red";
-	}
-</script>
-<script type="text/javascript">
-	function chooseShow(show) {//页面切换
-		var status = document.getElementById(show).style.display;
-		if(status == "none"){
-			document.getElementById("myInfo").style.display = "none";
-			document.getElementById("myClass").style.display = "none";
-			document.getElementById("classSquare").style.display = "none";
-			document.getElementById("searchResults").style.display = "none";
-			document.getElementById(show).style.display = "";	
-		}
-	}
-</script>
-
-<script type="text/javascript">
 	function showMyInfo() {//查看个人信息
 		chooseShow("myInfo");
 		var username = document.getElementById('reminder').text.split(":")[1];//根据reminder标签获取当前登录名
@@ -60,9 +35,8 @@
 		});
 	}
 </script>
-
 <script type="text/javascript">
-	function showMyClass(){//查询我的课题
+			function showMyClass(){//查询我的课题
 		chooseShow("myClass");
 		var username = document.getElementById('reminder').text.split(":")[1];//根据reminder标签获取当前登录名
 		$.ajax({
@@ -84,7 +58,6 @@
 		});
 	}
 </script>
-
 <script type="text/javascript">
 	function showClassSquare(){//查询课题广场
 		chooseShow("classSquare");
@@ -97,7 +70,12 @@
     				el: '#vueClassSquare',
     				data: {
         				classSquareStore: retResult
-    				}
+    				},
+    				methods:{
+    					addMyKyxm: function(k_id){
+    									addMyKyxmA(k_id);
+									}
+    					}
 				});
 				if(retResult == "" || retResult == null){
 					document.getElementById("classSquareReminder").innerHTML = "一共有0条课题记录";
@@ -111,8 +89,6 @@
 		});
 	}
 </script>
-
-
 <script type="text/javascript">
 	function showSearchResults() {//搜索结果
 		//alert("test");
@@ -131,7 +107,12 @@
     				el: '#vueSearchResults',
     				data: {
         				searchResultsStore: retResult
-    				}
+    				},
+    				methods:{
+    					addMyKyxm: function(k_id){
+    									addMyKyxmA(k_id);
+									}
+    					}
 				});
 				if(retResult == "" || retResult == null){
 					document.getElementById("searchResultsReminder").innerHTML = "一共有0条课题记录";
@@ -261,8 +242,9 @@
                     <td>{{ temp.k_name  }}</td>
                     <td>{{ temp.k_category  }}</td>
                     <td>{{ temp.k_score  }}</td>
+                    <td><button type="button" class="btn btn-default" @click='addMyKyxm(temp.k_id)'>添加</button></td>
                 </tr>
-			</table>
+				</table>
 			</div>
 		</div>
 	</div>
@@ -285,6 +267,7 @@
                     <td>{{ temp.k_name  }}</td>
                     <td>{{ temp.k_category  }}</td>
                     <td>{{ temp.k_score  }}</td>
+                    <td><button type="button" class="btn btn-default" @click='addMyKyxm(temp.k_id)'>添加</button></td>
                 </tr>
 			</table>
 		</div>

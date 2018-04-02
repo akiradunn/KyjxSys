@@ -27,7 +27,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-		http.authorizeRequests().antMatchers("/verifyLogin", "/api/kyxm", "/login.html").permitAll().anyRequest()
+		http.authorizeRequests().antMatchers("/verifyLogin","/login.html","/api/**").permitAll().anyRequest()
 				.authenticated()
 				// .anyRequest().permitAll()
 				.and().formLogin().loginPage("/login.html")

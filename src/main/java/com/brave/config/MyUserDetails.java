@@ -10,6 +10,7 @@ import com.brave.entity.Visit;
 public class MyUserDetails implements UserDetails {
 	/**
 	 * 
+	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 	private Visit visit;

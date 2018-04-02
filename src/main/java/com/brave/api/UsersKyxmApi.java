@@ -8,10 +8,11 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.brave.dao.VisitDao;
 import com.brave.service.UsersKyxmDaoService;
-
+@RestController
 public class UsersKyxmApi {
 	@Autowired
 	private UsersKyxmDaoService usersKyxmDaoService;
@@ -23,13 +24,13 @@ public class UsersKyxmApi {
 	 * @param k_name
 	 * @return
 	 */
-	@RequestMapping(value = "/api/usersKyxm/id/{k_id}", method = RequestMethod.POST, produces = "application/json; charset=UTF-8")
+	@RequestMapping(value = "/api/usersKyxm/id/{k_id}", method = RequestMethod.POST)
 	public String addMyKyxm(@PathVariable("k_id") int k_id) {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		String username = auth.getName();
 		int u_id = visitDao.getVisitUID(username);
 		Date date = new Date();
 		usersKyxmDaoService.insertKyxm(u_id, k_id, "已申报", date.toLocaleString(), null, null, false, false);
-		return "ok";
+		return "add ok";
 	}
 }

@@ -3,6 +3,7 @@ package com.brave.dao;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Insert;
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.springframework.stereotype.Repository;
 
@@ -24,5 +25,5 @@ public interface UsersKyxmDao {
 	
 	@Insert("insert into UsersKyxm(u_id,k_id,k_status,k_applyTime,k_setTime,k_endTime,k_scoreApplied,k_completed) "
 			+ "values(#{u_id},#{k_id},#{k_status},#{k_applyTime},#{k_setTime},#{k_endTime},#{k_scoreApplied},#{k_completed})")
-	public void insertKyxm(int u_id, int k_id, String k_status, String k_applyTime, String k_setTime, String k_endTime, boolean k_scoreApplied, boolean k_completed);
+	public void insertKyxm(@Param("u_id")int u_id, @Param("k_id")int k_id, @Param("k_status")String k_status, @Param("k_applyTime")String k_applyTime, @Param("k_setTime")String k_setTime, @Param("k_endTime")String k_endTime, @Param("k_scoreApplied")boolean k_scoreApplied, @Param("k_completed")boolean k_completed);
 }
