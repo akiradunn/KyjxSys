@@ -48,7 +48,6 @@ public class KyxmApi {
 		}
 		// return kyxmDaoService.getAllKyxm();
 	}
-
 	@RequestMapping(value = "/api/kyxm/{k_name}", method = RequestMethod.GET, produces = "application/json; charset=UTF-8")
 	public List<Kyxm> getKyxm(@PathVariable("k_name") String k_name) {
 		return kyxmDaoService.getKyxmFromName(k_name);

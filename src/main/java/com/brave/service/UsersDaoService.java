@@ -39,7 +39,13 @@ public class UsersDaoService implements UsersDao{
 	@Override
 	public void insertUsers(int u_id, String u_name, String u_identity, int u_wholePoints) {
 		// TODO Auto-generated method stub
-		
+		usersDao.insertUsers(u_id, u_name, u_identity, u_wholePoints);
+	}
+
+	@Override
+	public void updateUsers(int u_id, String u_name, String u_sex) {
+		// TODO Auto-generated method stub
+		usersDao.updateUsers(u_id, u_name, u_sex);
 	}
 
 }

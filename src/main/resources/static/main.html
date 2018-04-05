@@ -12,121 +12,8 @@
 <script src="/bootstrap-3.3.7/docs/dist/js/bootstrap.min.js"></script>
 <!-- vue.js core -->
 <script src="https://cdn.bootcss.com/vue/2.4.2/vue.min.js"></script>
-<script type="text/javascript">
-	function showMyInfo() {//查看个人信息
-		chooseShow("myInfo");
-		var username = document.getElementById('reminder').text.split(":")[1];//根据reminder标签获取当前登录名
-		$.ajax({
-			type : "GET", //提交的方法
-			url : "/api/users/others/"+username,//提交的地址 
-			async : true,
-			success : function(retResult) {
-				new Vue({
-    				el: '#vueMyInfo',
-    				data: {
-        				myInfoStore: retResult
-    				}
-				});
-				document.getElementById("myInfoReminder").innerHTML = "--------以下是您的个人信息--------";
-			},
-			error : function(retResult) {
-				alert("Request error!");
-			}
-		});
-	}
-</script>
-<script type="text/javascript">
-			function showMyClass(){//查询我的课题
-		chooseShow("myClass");
-		var username = document.getElementById('reminder').text.split(":")[1];//根据reminder标签获取当前登录名
-		$.ajax({
-			type : "GET", //提交的方法
-			url : "/api/kyxm/others/"+username,//提交的地址 
-			async : true,
-			success : function(retResult) { 
-				new Vue({
-    				el: '#vueMyClass',
-    				data: {
-        				myClassStore: retResult
-    				}
-				});
-				document.getElementById("myClassReminder").innerHTML = "--------以下是您的课题信息--------";
-			},
-			error : function(retResult) {
-				alert("Request error!");
-			}
-		});
-	}
-</script>
-<script type="text/javascript">
-	function showClassSquare(){//查询课题广场
-		chooseShow("classSquare");
-		$.ajax({
-			type : "GET", //提交的方法
-			url : "/api/kyxm",
-			async : true,
-			success : function(retResult) {
-				new Vue({
-    				el: '#vueClassSquare',
-    				data: {
-        				classSquareStore: retResult
-    				},
-    				methods:{
-    					addMyKyxm: function(k_id){
-    									addMyKyxmA(k_id);
-									}
-    					}
-				});
-				if(retResult == "" || retResult == null){
-					document.getElementById("classSquareReminder").innerHTML = "一共有0条课题记录";
-				}else if(retResult instanceof Array){//返回的JSON数据可能是一个对象也可能是一个数组
-					 			document.getElementById("classSquareReminder").innerHTML = "一共有"+retResult.length+"条课题记录";
-						}
-				},
-			error : function(retResult) {
-				alert("Request error!");
-			}
-		});
-	}
-</script>
-<script type="text/javascript">
-	function showSearchResults() {//搜索结果
-		//alert("test");
-		chooseShow("searchResults");
-		//直接获取input元素的值不行,因为获取到的是页面加载之后,填写表单之前的元素的值，必然为空，获取输入的值要通过form表单进行获取
-		var k_name = document.getElementById("searchForm").k_name.value;
-		if(k_name == "" || k_name == null){
-			k_name = "blank";
-		}
-		$.ajax({
-			type : "GET", //提交的方法
-			url : "/api/kyxm/"+k_name,//提交的地址 
-			async : true,
-			success : function(retResult) {
-				new Vue({
-    				el: '#vueSearchResults',
-    				data: {
-        				searchResultsStore: retResult
-    				},
-    				methods:{
-    					addMyKyxm: function(k_id){
-    									addMyKyxmA(k_id);
-									}
-    					}
-				});
-				if(retResult == "" || retResult == null){
-					document.getElementById("searchResultsReminder").innerHTML = "一共有0条课题记录";
-				}else if(retResult instanceof Array){//返回的一个JSON数组
-					 			document.getElementById("searchResultsReminder").innerHTML = "一共有"+retResult.length+"条课题记录";
-						}
-				},
-				error : function(retResult) {
-					alert("Request error!");
-				}
-			});
-		}
-</script>
 </head>
+
 <body onload="checkUserRole()">
 	<!--container-->
 	<div class="container">
@@ -161,36 +48,66 @@
 				<!--/nav-->
 			</div>
 		</div>
-	</div>
+</div>
 	<!--/container-->
-	<br>
-	<br>
-	<!-- 我的信息 -->
-	<div id="myInfo" style="display: none;" align="center">
-		<div class="panel panel-default">
+
+<br>
+<br>
+
+		<!-- 我的信息 -->
+		<div id="myInfo" style="display: none;">
+			<form id="updateMyInfoForm">
+			<div id ="vueMyInfo" class="panel panel-default">
 			<!-- Default panel contents -->
-			<div class="panel-heading" id="myInfoReminder"></div>
+			<div class="panel-body">
+				<button type="button" class="btn btn-default" @click="edited()">编辑</button>
+				<button v-if="!show" type="button" class="btn btn-default" @click="save()">保存</button>
 			<!-- Table -->
-			<div id="vueMyInfo">
 			<table class="table">
 				<tr>
 					<th>名字</th>
-					<th>性别</th>
-					<th>职称</th>
-					<th>科研总分</th>
+					<td v-if="show">{{ MyBassicInfoStore[0].u_name }}</td>
+					<td v-else>
+								<input name="u_name" v-bind:value="MyBassicInfoStore[0].u_name" type="text" class="form-control">
+					</td>
 				</tr>
-                	<tr v-for="temp in myInfoStore">
-                	<td>{{ temp.u_name }}</td>
-                    <td>{{ temp.u_sex }}</td>
-                    <td>{{ temp.u_identity }}</td>
-                    <td>{{ temp.u_wholePoints }}</td>
-                </tr>
-			</table>
+				<tr>
+					<th>性别</th>
+					<td v-if="show">{{ MyBassicInfoStore[0].u_sex }}</td>
+					<td v-else>
+								<input name="u_sex" v-bind:value="MyBassicInfoStore[0].u_sex" type="text" class="form-control">
+					</td>
+				</tr>
+				<tr>
+					<th>职称</th>
+					<td>{{ MyBassicInfoStore[0].u_identity }}</td>
+				</tr>
+				<tr>
+					<th>科研总分</th>
+					<td>{{ MyBassicInfoStore[0].u_wholePoints }}</td>
+				</tr>
+				<tr>
+					<th>用户名</th>
+					<td v-if="show">{{ MyAccountInfoStore.currentUsername }}</td>
+					<td v-else>
+								<input name="modifiedusername" v-bind:value="MyAccountInfoStore.currentUsername" type="text" class="form-control">
+					</td>
+				</tr>
+				<tr>
+					<th>密码</th>
+					<td v-if="show">********</td>
+					<td v-else>
+								<input name="password" type="text" value="********" class="form-control">
+					</td>
+				</tr>
+				</table>
+				</div>
 			</div>
+			</form>
 		</div>
-	</div>
 	<!-- /我的信息 -->
 
+	
 	<!-- 我的课题 -->
 	<div id="myClass" style="display: none;" align="center">
 		<div class="panel panel-default">
