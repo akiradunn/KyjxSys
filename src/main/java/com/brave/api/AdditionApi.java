@@ -1,37 +1,28 @@
 package com.brave.api;
-
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
 import com.brave.entity.Users;
 import com.brave.service.UsersDaoService;
 import com.brave.service.VisitDaoService;
 import com.brave.show.ShowMyInfo;
-
 @RestController
-public class UsersApi {
+public class AdditionApi {
 	@Autowired
 	private UsersDaoService usersDaoService;
 	@Autowired
 	private VisitDaoService visitDaoService;
-	
-	@RequestMapping(value = "/api/users", method = RequestMethod.GET, produces = "application/json; charset=UTF-8")
-	public List<Users> getAllUsers() {
-		return usersDaoService.getAllUsers();
-	}
-	//查看我的信息时的返回操作
-	@RequestMapping(value = "/api/now_users", method = RequestMethod.GET, produces = "application/json; charset=UTF-8")
-	public ShowMyInfo getNowUsers() {
+	@RequestMapping(value = "/api/addition/update_usersvisit", method = RequestMethod.PUT, produces = "application/json; charset=UTF-8")
+	public ShowMyInfo updateUsers(@RequestParam("u_name") String u_name,@RequestParam("u_sex") String u_sex,@RequestParam("username") String modifiedusername,@RequestParam("password") String password) {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		String username = auth.getName();
 		int u_id = visitDaoService.getVisitUID(username);
+		usersDaoService.updateUsers(u_id, u_name, u_sex);
+		visitDaoService.updateUsers(u_id, username, modifiedusername,password);
 		ShowMyInfo ret = new ShowMyInfo();
 		Users users = usersDaoService.getUsersFromId(u_id);
 		ret.setU_name(users.getU_name());
@@ -39,19 +30,7 @@ public class UsersApi {
 		ret.setU_sex(users.getU_sex());
 		ret.setU_wholePoints(users.getU_wholePoints());
 		ret.setUsername(username);
-		ret.setPassword(visitDaoService.getVisit(username).getPassword());
+		ret.setPassword(password);
 		return ret;
-	}
-	
-	@RequestMapping(value = "/api/users/others/{username}", method = RequestMethod.GET, produces = "application/json; charset=UTF-8")
-	public Users getUsers(@PathVariable("username") String username) {
-		int u_id = visitDaoService.getVisitUID(username);
-		System.out.println("enter users api module");
-		return usersDaoService.getUsersFromId(u_id);
-	}
-	
-	@RequestMapping(value = "/api/users/{u_name}", method = RequestMethod.DELETE)
-	public void deleteUsers(@PathVariable("u_name") String u_name) {
-		usersDaoService.deleteUsers(u_name);
 	}
 }

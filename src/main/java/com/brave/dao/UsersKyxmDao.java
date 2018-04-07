@@ -2,13 +2,13 @@ package com.brave.dao;
 
 import java.util.List;
 
+import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 import org.springframework.stereotype.Repository;
-
 import com.brave.entity.UsersKyxm;
-
 @Repository(value = "usersKyxmDao")
 public interface UsersKyxmDao {
 	@Select("select * from UsersKyxm")
@@ -26,4 +26,16 @@ public interface UsersKyxmDao {
 	@Insert("insert into UsersKyxm(u_id,k_id,k_status,k_applyTime,k_setTime,k_endTime,k_scoreApplied,k_completed) "
 			+ "values(#{u_id},#{k_id},#{k_status},#{k_applyTime},#{k_setTime},#{k_endTime},#{k_scoreApplied},#{k_completed})")
 	public void insertKyxm(@Param("u_id")int u_id, @Param("k_id")int k_id, @Param("k_status")String k_status, @Param("k_applyTime")String k_applyTime, @Param("k_setTime")String k_setTime, @Param("k_endTime")String k_endTime, @Param("k_scoreApplied")boolean k_scoreApplied, @Param("k_completed")boolean k_completed);
+	
+	@Select("select * from UsersKyxm where k_setTime = null")
+	public List<UsersKyxm> getAppliedKyxm();
+	
+	@Select("select * from UsersKyxm where k_setTime != null")
+	public List<UsersKyxm> getApplingKyxm();
+	
+	@Update("update UsersKyxm set k_setTime=#{k_setTime} where u_id=#{u_id} and k_id={#k_id}")
+	public void setAppliedKyxm(@Param("u_id")int u_id,@Param("k_id")int k_id,@Param("k_setTime")String k_setTime);
+
+	@Delete("delete from UsersKyxm where where u_id=#{u_id} and k_id={#k_id}")
+	public void deleteUsersKyxm(@Param("u_id")int u_id,@Param("k_id")int k_id);
 }

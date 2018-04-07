@@ -46,4 +46,28 @@ public class UsersKyxmDaoService implements UsersKyxmDao {
 		usersKyxmDao.insertKyxm(u_id, k_id, k_status, k_applyTime, k_setTime, k_endTime, k_scoreApplied, k_completed);
 	}
 
+	@Override
+	public List<UsersKyxm> getAppliedKyxm() {
+		// TODO Auto-generated method stub
+		return usersKyxmDao.getAppliedKyxm();
+	}
+
+	@Override
+	public List<UsersKyxm> getApplingKyxm() {
+		// TODO Auto-generated method stub
+		return usersKyxmDao.getApplingKyxm();
+	}
+
+	@Override
+	public void setAppliedKyxm(int u_id, int k_id, String k_setTime) {
+		// TODO Auto-generated method stub
+		usersKyxmDao.setAppliedKyxm(u_id, k_id, k_setTime);
+	}
+
+	@Override
+	public void deleteUsersKyxm(int u_id, int k_id) {
+		// TODO Auto-generated method stub
+		usersKyxmDao.deleteUsersKyxm(u_id, k_id);
+	}
+
 }
