@@ -71,7 +71,7 @@ function saveMyInfo() {//用户保存个人信息
 		 }
 		});
 		vueMain.show = false; //必须在发送请求之后执行此操作，因为如果dom节点改变，ajax就获取不到表单了
-	}
+}
 //我的信息模块end
 
 
@@ -150,8 +150,6 @@ function addMyKyxm(k_id) {//用户添加课题至我的列表-课题广场,搜�
 		success: function(retResult) {
 			if (retResult == "success") {
 				console.log("apply kyxm : "+k_id+" ok!");
-			}else{
-				console.log("apply kyxm : "+k_id+" failed!");
 			}
 		},
 		error: function(retResult) {
@@ -180,168 +178,3 @@ function searchKyxm() {
 	})
 }
 //搜索课题模块end
-
-
-
-
-
-
-
-
-
-//管理员模块start
-function chooseShowAdmin(show) { //页面切换
-	var status = document.getElementById(show).style.display;
-	if (status == "none") {
-		// document.getElementById("myInfo").style.display = "none";
-		// document.getElementById("myClass").style.display = "none";
-		document.getElementById("applyingKyxmListSection").style.display = "none";
-		document.getElementById("applyingCompletingKyxmListSection").style.display = "none";
-		document.getElementById("applyingScoreKyxmListSection").style.display = "none";
-		document.getElementById(show).style.display = "";
-	}
-}
-
-//审批课题立项start
-function admin_getApplyingKyxmList() {//管理员查看课题申报列表
-	$.ajax({
-		type:"GET",
-		url: "/api/userkyxm/getApplyingKyxmList",
-		async: true,
-		success: function(retResult) {
-			vueMain.applyingKyxmTableData = retResult;
-		},
-		error: function(retResult) {
-			alert("Request error");
-		}
-	})
-}
-function showApplyingKyxmListSection() {//切换页面至审核课题立项模块
-	chooseShowAdmin("applyingKyxmListSection");
-	admin_getApplyingKyxmList();
-}
-function passApplyingKyxm(k_id) {
-	$.ajax({
-		type:"PUT",
-		url: "/api/userkyxm/passApplyingKyxm/" + k_id,
-		async: true,
-		success: function(retResult) {
-			vueMain.applyingKyxmTableData = retResult;
-			console.log("通过课题:"+k_id+"的立项申请!");
-		},
-		error: function(retResult) {
-			console.log("课题:"+k_id+"的立项申请处理异常!");
-		}
-	})
-}
-function rejectApplyingKyxm(k_id) {
-	$.ajax({
-		type:"PUT",
-		url: "/api/userkyxm/rejectApplyingKyxm/" + k_id,
-		async: true,
-		success: function(retResult) {
-			vueMain.applyingKyxmTableData = retResult;
-			console.log("拒绝课题:"+k_id+"的立项申请!");
-		},
-		error: function(retResult) {
-			console.log("课题:"+k_id+"的立项申请处理异常!");
-		}
-	})
-}
-//审批课题立项end
-
-//审批课题结项start
-function admin_getApplyingCompletingKyxmList() {
-	$.ajax({
-		type:"GET",
-		url: "/api/userkyxm/getApplyingCompletingKyxmList",
-		async: true,
-		success: function(retResult) {
-			vueMain.applyingCompletingKyxmTableData = retResult;
-		},
-		error: function(retResult) {
-			alert("Request error");
-		}
-	})
-}
-function showApplyingCompletingKyxmListSection() {//切换页面至审核课题结项模块
-	chooseShowAdmin("applyingCompletingKyxmListSection");
-	admin_getApplyingCompletingKyxmList();
-}
-function passApplyingCompletingKyxm(k_id) {
-	$.ajax({
-		type:"PUT",
-		url: "/api/userkyxm/passApplyingCompletingKyxm/" + k_id,
-		async: true,
-		success: function(retResult) {
-			vueMain.applyingCompletingKyxmTableData = retResult;
-			console.log("通过课题:"+k_id+"的结项申请!");
-		},
-		error: function(retResult) {
-			console.log("课题:"+k_id+"的结项申请处理异常!");
-		}
-	})
-}
-function rejectApplyingCompletingKyxm(k_id) {
-	$.ajax({
-		type:"PUT",
-		url: "/api/userkyxm/rejectApplyingCompletingKyxm/" + k_id,
-		async: true,
-		success: function(retResult) {
-			vueMain.applyingCompletingKyxmTableData = retResult;
-			console.log("拒绝课题:"+k_id+"的结项申报申请!");
-		},
-		error: function(retResult) {
-			console.log("课题:"+k_id+"的结项申请处理异常!");
-		}
-	})
-}
-//审批课题结项end
-
-//审批课题积分start
-function admin_getApplyingScoreKyxmList() {
-	$.ajax({
-		type:"GET",
-		url: "/api/userkyxm/getApplyingScoreKyxmList",
-		async: true,
-		success: function(retResult) {
-			vueMain.applyingScoreKyxmTableData = retResult;
-		},
-		error: function(retResult) {
-			alert("Request error");
-		}
-	})
-}
-function showApplyingScoreKyxmListSection() {//切换页面至审核课题积分模块
-	chooseShowAdmin("applyingScoreKyxmListSection");
-	admin_getApplyingScoreKyxmList();
-}
-function passApplyingScoreKyxm(k_id) {
-	$.ajax({
-		type:"PUT",
-		url: "/api/userkyxm/passApplyingScoreKyxm/" + k_id,
-		async: true,
-		success: function(retResult) {
-			vueMain.applyingScoreKyxmTableData = retResult;
-			console.log("通过课题:"+k_id+"的积分申请!");
-		},
-		error: function(retResult) {
-			console.log("课题:"+k_id+"的积分申请处理异常!");
-		}
-	})
-}
-function rejectApplyingScoreKyxm(k_id) {
-	$.ajax({
-		type:"PUT",
-		url: "/api/userkyxm/rejectApplyingScoreKyxm/" + k_id,
-		async: true,
-		success: function(retResult) {
-			vueMain.applyingCompletingKyxmTableData = retResult;
-			console.log("拒绝课题:"+k_id+"的结项申报申请!");
-		},
-		error: function(retResult) {
-			console.log("课题:"+k_id+"的结项申请处理异常!");
-		}
-	})
-}
-//审批课题积分end

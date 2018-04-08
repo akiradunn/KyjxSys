@@ -1,7 +1,8 @@
 package com.brave.show;
 public class ShowKyxms {
 	private int u_id;
-	private String k_name;
+	private int k_id;
+	private String k_name;//弥补kyxm类
 	private int k_score;
 	private String k_status;
 	private String k_applyTime;
@@ -14,6 +15,12 @@ public class ShowKyxms {
 	}
 	public void setU_id(int u_id) {
 		this.u_id = u_id;
+	}
+	public int getK_id() {
+		return k_id;
+	}
+	public void setK_id(int k_id) {
+		this.k_id = k_id;
 	}
 	public String getK_name() {
 		return k_name;

@@ -1,145 +1,198 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="UTF-8">
-<title>Insert title here</title>
-<!--jQuery引用-->
-<script src="files/js/jquery-3.3.1.js"></script>
-<script src="files/js/my.js"></script>
-<!-- vue.js core -->
-<script src="https://cdn.bootcss.com/vue/2.4.2/vue.min.js"></script>
-<!-- 引入样式 -->
-<link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
-<!-- 引入组件库 -->
-<script src="https://unpkg.com/element-ui/lib/index.js"></script>
-<style type="text/css">
-	.el-header {
-    background-color: #D3D3D3;
-    color: #333;
-    text-align: center;
-    line-height: 60px;
-  }
-
-  .el-footer {
-    background-color: #FFFFFF;
-    color: #333;
-    text-align: center;
-    line-height: 60px;
-  }
-  
-  .el-aside {
-    background-color: #FFFFFF;
-    color: #333;
-    text-align: center;
-    line-height: 200px;
-  }
-  
-  .el-main {
-    background-color: #FFFFFF;
-    color: #333;
-    text-align: center;
-    line-height: 160px;
-  }
-  
-  body > .el-container {
-    margin-bottom: 40px;
-  }
-  
-  .el-container:nth-child(5) .el-aside,
-  .el-container:nth-child(6) .el-aside {
-    line-height: 260px;
-  }
-  
-  .el-container:nth-child(7) .el-aside {
-    line-height: 320px;
-  }
-</style>
+	<meta charset="UTF-8">
+	<title>Insert title here</title>
+	<!--jQuery引用-->
+	<script src="files/js/jquery-3.3.1.js"></script>
+	<!-- vue.js core -->
+	<script src="https://cdn.bootcss.com/vue/2.4.2/vue.min.js"></script>
+	<!-- 引入样式 -->
+	<link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+	<!-- 引入组件库 -->
+	<script src="https://unpkg.com/element-ui/lib/index.js"></script>
+	<link href="files/css/my.css" rel="stylesheet" type="text/css" />
+	<script src="files/js/my.js"></script>
 </head>
 <body>
-<div id="app">
-<el-container>
-  <el-header>科研教学成果管理系统</el-header>
-  <el-container>
-    <el-aside width="200px">
-  <el-row class="tac">
-  <el-col :span="20">
+	<div id="app">
+		<el-container>
+			<el-header>科研教学成果管理系统</el-header>
+			<el-container>
+				<el-aside width="200px">
+					<el-row class="tac">
+						<el-col :span="20">
+							<el-menu
+							default-active="2"
+							class="el-menu-vertical-demo"
+							@open="handleOpen"
+							@close="handleClose">
+							<el-submenu index="1">
+								<template slot="title">
+									<i class="el-icon-location"></i>
+									<span>审批事务</span>
+								</template>
+								<el-menu-item-group>
+									<el-menu-item index="1-1" @click="showApplyingKyxmListSection">立项审批</el-menu-item>
+									<el-menu-item index="1-2" @click="showApplyingCompletingKyxmListSection">结项审批</el-menu-item>
+									<el-menu-item index="1-3" @click="showApplyingScoreKyxmListSection">积分审批</el-menu-item>
+								</el-menu-item-group>
+							</el-submenu>
+							<el-submenu index="2">
+								<template slot="title">
+									<i class="el-icon-menu"></i>
+									<span>信息管理</span>
+								</template>
+								<el-menu-item-group>
+									<el-menu-item index="2-1">用户管理</el-menu-item>
+									<el-menu-item index="2-2">课题管理</el-menu-item>
+								</el-menu-item-group>
+							</el-submenu>
+							<el-submenu index="3">
+								<template slot="title">
+									<i class="el-icon-document"></i>
+									<span>积分统计</span>
+								</template>
+								<el-menu-item-group>
+									<el-menu-item index="3-1">部门积分</el-menu-item>
+									<el-menu-item index="3-2">个人积分</el-menu-item>
+								</el-menu-item-group>
+							</el-submenu>
+							<el-menu-item index="4">
+								<i class="el-icon-setting"></i>
+								<span slot="title">用户注销</span>
+							</el-menu-item>
+						</el-menu>
+					</el-col>
+				</el-row>
+			</el-aside>
 
-    <el-menu
-      default-active="2"
-      class="el-menu-vertical-demo"
-      @open="handleOpen"
-      @close="handleClose">
+			<el-container>
+				<el-main>
+					<!--审批课题立项start-->
+					<div id="applyingKyxmListSection" style="display: none">
+						<template>
+							<el-table :data="applyingKyxmTableData"  border style="width: 100%">
+								<el-table-column header-align="center" prop="u_id" label="用户编号">
+								</el-table-column>
+								<el-table-column header-align="center" prop="k_name" label="课题名称">
+								</el-table-column>
+								<el-table-column header-align="center" prop="k_status" label="课题状态">
+								</el-table-column>
+								<el-table-column header-align="center" prop="k_score" label="课题积分">
+								</el-table-column>
+								<el-table-column header-align="center" prop="k_applyTime" label="申报时间">
+								</el-table-column>
+								<el-table-column header-align="center" prop="k_setTime" label="立项时间">
+								</el-table-column>
+								<el-table-column header-align="center" prop="k_endTime" label="结项时间">
+								</el-table-column>
+								<el-table-column header-align="center" label="操作">
+									<template scope="props">
+										<el-button type="primary" @click='passApplyingKyxm(props.row.k_id)'>通过</el-button>
+										<br>
+										<br>
+										<el-button type="primary"@click='rejectApplyingKyxm(props.row.k_id)'>拒绝</el-button>
+									</template>
+								</el-table-column>
+							</el-table>
+						</template>
+					</div>
+					<!--审批课题立项end-->
 
-      <el-submenu index="1">
-        <template slot="title">
-          <i class="el-icon-location"></i>
-          <span>审批事务</span>
-        </template>
-        <el-menu-item-group>
-          <el-menu-item index="1-1">审批课题</el-menu-item>
-          <el-menu-item index="1-2">审批积分</el-menu-item>
-        </el-menu-item-group>
-      </el-submenu>
+					<!--审批课题结项start-->
+					<div id="applyingCompletingKyxmListSection" style="display: none">
+						<template>
+							<el-table :data="applyingCompletingKyxmTableData"  border style="width: 100%">
+								<el-table-column header-align="center" prop="u_id" label="用户编号">
+								</el-table-column>
+								<el-table-column header-align="center" prop="k_name" label="课题名称">
+								</el-table-column>
+								<el-table-column header-align="center" prop="k_status" label="课题状态">
+								</el-table-column>
+								<el-table-column header-align="center" prop="k_score" label="课题积分">
+								</el-table-column>
+								<el-table-column header-align="center" prop="k_applyTime" label="申报时间">
+								</el-table-column>
+								<el-table-column header-align="center" prop="k_setTime" label="立项时间">
+								</el-table-column>
+								<el-table-column header-align="center" prop="k_endTime" label="结项时间">
+								</el-table-column>
+								<el-table-column header-align="center" label="操作">
+									<template scope="props">
+										<el-button type="primary" @click='passApplyingCompletingKyxm(props.row.k_id)'>通过</el-button>
+										<br>
+										<br>
+										<el-button type="primary"@click='rejectApplyingCompletingKyxm(props.row.k_id)'>拒绝</el-button>
+									</template>
+								</el-table-column>
+							</el-table>
+						</template>
+					</div>
+					<!--审批课题结项end-->
 
-      <el-submenu index="2">
-        <template slot="title">
-          <i class="el-icon-menu"></i>
-          <span>用户管理</span>
-        </template>
-        <el-menu-item-group>
-          <el-menu-item index="2-1">添加用户</el-menu-item>
-          <el-menu-item index="2-2">删除用户</el-menu-item>
-        </el-menu-item-group>
-      </el-submenu>
- 
-      <el-submenu index="3">
-        <template slot="title">
-          <i class="el-icon-document"></i>
-          <span>积分统计</span>
-        </template>
-        <el-menu-item-group>
-          <el-menu-item index="3-1">部门积分</el-menu-item>
-          <el-menu-item index="3-2">个人积分</el-menu-item>
-        </el-menu-item-group>
-      </el-submenu>
-      
-      <el-menu-item index="4">
-        <i class="el-icon-setting"></i>
-        <span slot="title">导航四</span>
-      </el-menu-item>
+					<!--审批课题积分start-->
+					<div id="applyingScoreKyxmListSection" style="display: none">
+						<template>
+							<el-table :data="applyingScoreKyxmTableData"  border style="width: 100%">
+								<el-table-column header-align="center" prop="u_id" label="用户编号">
+								</el-table-column>
+								<el-table-column header-align="center" prop="k_name" label="课题名称">
+								</el-table-column>
+								<el-table-column header-align="center" prop="k_status" label="课题状态">
+								</el-table-column>
+								<el-table-column header-align="center" prop="k_score" label="课题积分">
+								</el-table-column>
+								<el-table-column header-align="center" prop="k_applyTime" label="申报时间">
+								</el-table-column>
+								<el-table-column header-align="center" prop="k_setTime" label="立项时间">
+								</el-table-column>
+								<el-table-column header-align="center" prop="k_endTime" label="结项时间">
+								</el-table-column>
+								<el-table-column header-align="center" label="操作">
+									<template scope="props">
+										<el-button type="primary" @click='passApplyingScoreKyxm(props.row.k_id)'>通过</el-button>
+										<br>
+										<br>
+										<el-button type="primary"@click='rejectApplyingScoreKyxm(props.row.k_id)'>拒绝</el-button>
+									</template>
+								</el-table-column>
+							</el-table>
+						</template>
+					</div>
+					<!--审批课题积分end-->
+				</el-main>
 
-  </el-menu>
-
-  </el-col>
-</el-row>
-
-
-    </el-aside>
-    <el-container>
-      <el-main>Main</el-main>
-      <el-footer>
-      	<el-pagination background layout="prev, pager, next" :total="1000">
-		</el-pagination>
-
-      </el-footer>
-    </el-container>
-  </el-container>
-</el-container>
+				<el-footer>
+					<div id="pageDivide" style="display: none">
+						<el-pagination background layout="prev, pager, next" :total="1000">
+						</el-pagination>
+					</div>
+				</el-footer>
+			</el-container>
+		</el-container>
+	</el-container>
 </div>
 
+
 <script>
-var Main = {
-    methods: {
-      handleOpen(key, keyPath) {
-        console.log(key, keyPath);
-      },
-      handleClose(key, keyPath) {
-        console.log(key, keyPath);
-      }
-    }
+//vue实例的创建是有先后顺序的，而且经验告诉我们有注入数据的dom节点只能有一个vue实例与之对应
+var vueMain = new Vue({
+	el: '#app',
+	data: {
+		applyingKyxmTableData: [],//审核课题立项tabledata
+		applyingCompletingKyxmTableData: [],//审核课题结项tabledata
+		applyingScoreKyxmTableData: []
+	},
+	methods: {
+		handleOpen(key, keyPath) {
+			console.log(key, keyPath);
+		},
+		handleClose(key, keyPath) {
+			console.log(key, keyPath);
+		}
 	}
-	var Ctor =  Vue.extend(Main)
-new Ctor().$mount('#app')
+});
 </script>
 </body>
 </html>

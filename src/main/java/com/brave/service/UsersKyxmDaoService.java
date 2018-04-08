@@ -46,28 +46,25 @@ public class UsersKyxmDaoService implements UsersKyxmDao {
 		usersKyxmDao.insertKyxm(u_id, k_id, k_status, k_applyTime, k_setTime, k_endTime, k_scoreApplied, k_completed);
 	}
 
+	/* 用户申请结项课题
+	 * @see com.brave.dao.UsersKyxmDao#applySetMyKyxm(int, int, java.lang.String)
+	 */
 	@Override
-	public List<UsersKyxm> getAppliedKyxm() {
+	public void applySetMyKyxm(int u_id, int k_id, String k_status) {
 		// TODO Auto-generated method stub
-		return usersKyxmDao.getAppliedKyxm();
+		usersKyxmDao.applySetMyKyxm(u_id, k_id, k_status);
 	}
 
 	@Override
-	public List<UsersKyxm> getApplingKyxm() {
+	public List<UsersKyxm> getApplyingKyxmList(String k_status) {
 		// TODO Auto-generated method stub
-		return usersKyxmDao.getApplingKyxm();
+		return usersKyxmDao.getApplyingKyxmList(k_status);
 	}
 
 	@Override
-	public void setAppliedKyxm(int u_id, int k_id, String k_setTime) {
+	public void operateApplyingKyxm(int u_id, int k_id, String k_status, String k_setTime, String k_endTime,
+			boolean k_scoreApplied, boolean k_completed) {
 		// TODO Auto-generated method stub
-		usersKyxmDao.setAppliedKyxm(u_id, k_id, k_setTime);
+		usersKyxmDao.operateApplyingKyxm(u_id, k_id, k_status, k_setTime, k_endTime, k_scoreApplied, k_completed);
 	}
-
-	@Override
-	public void deleteUsersKyxm(int u_id, int k_id) {
-		// TODO Auto-generated method stub
-		usersKyxmDao.deleteUsersKyxm(u_id, k_id);
-	}
-
 }

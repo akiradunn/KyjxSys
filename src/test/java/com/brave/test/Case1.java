@@ -1,4 +1,7 @@
 package com.brave.test;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 import org.junit.Test;
@@ -8,6 +11,17 @@ import org.junit.Test;
 public class Case1 {
 	@Test
 	public void TestCase(){
-		System.out.println(new Date().toLocaleString());
+		SimpleDateFormat simpleDateFormat = new java.text.SimpleDateFormat("yyyy-MM-dd");
+	    Calendar calendar = java.util.Calendar.getInstance();
+	    try {
+	    	calendar.setTime(simpleDateFormat.parse(new Date().toLocaleString()));
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	    calendar.add(java.util.Calendar.DATE, 0); 
+	    String setTime = simpleDateFormat.format(calendar.getTime());
+	    calendar.add(java.util.Calendar.DATE, 100); // 向前一周；如果需要向后一周，用正数即可
+	    String endTime = simpleDateFormat.format(calendar.getTime());
 	}
 }

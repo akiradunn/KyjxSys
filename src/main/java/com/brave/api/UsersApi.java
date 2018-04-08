@@ -22,12 +22,15 @@ public class UsersApi {
 	@Autowired
 	private VisitDaoService visitDaoService;
 	
-	@RequestMapping(value = "/api/users", method = RequestMethod.GET, produces = "application/json; charset=UTF-8")
+	/**管理员查看所有真实用户
+	 * @return
+	 */
+	@RequestMapping(value = "/api/users/all_users", method = RequestMethod.GET, produces = "application/json; charset=UTF-8")
 	public List<Users> getAllUsers() {
 		return usersDaoService.getAllUsers();
 	}
 	//查看我的信息时的返回操作
-	@RequestMapping(value = "/api/now_users", method = RequestMethod.GET, produces = "application/json; charset=UTF-8")
+	@RequestMapping(value = "/api/users/now_users", method = RequestMethod.GET, produces = "application/json; charset=UTF-8")
 	public ShowMyInfo getNowUsers() {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		String username = auth.getName();
@@ -43,6 +46,10 @@ public class UsersApi {
 		return ret;
 	}
 	
+	/**通过用户名来查找真实用户
+	 * @param username
+	 * @return
+	 */
 	@RequestMapping(value = "/api/users/others/{username}", method = RequestMethod.GET, produces = "application/json; charset=UTF-8")
 	public Users getUsers(@PathVariable("username") String username) {
 		int u_id = visitDaoService.getVisitUID(username);
@@ -50,6 +57,9 @@ public class UsersApi {
 		return usersDaoService.getUsersFromId(u_id);
 	}
 	
+	/**通过真实姓名来删除真实用户
+	 * @param u_name
+	 */
 	@RequestMapping(value = "/api/users/{u_name}", method = RequestMethod.DELETE)
 	public void deleteUsers(@PathVariable("u_name") String u_name) {
 		usersDaoService.deleteUsers(u_name);
