@@ -48,4 +48,10 @@ public class UsersDaoService implements UsersDao{
 		usersDao.updateUsers(u_id, u_name, u_sex);
 	}
 
+	@Override
+	public void updateUsersPoints(int u_id, int u_wholePoints) {
+		// TODO Auto-generated method stub
+		usersDao.updateUsersPoints(u_id, u_wholePoints);
+	}
+
 }

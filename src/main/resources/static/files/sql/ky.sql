@@ -9,10 +9,10 @@ set character_set_database=utf8;
 set character_set_results=utf8;
 set character_set_server=utf8;
 
-DROP DATABASE IF EXISTS Test;
-CREATE database Test;
+DROP DATABASE IF EXISTS KY;
+CREATE database KY;
 
-USE Test;
+USE KY;
 
 /*==============================================================*/
 /* Table: Kyxm                                                  */
@@ -90,18 +90,28 @@ alter table Visit add constraint FK_Reference_4 foreign key (r_id)
       references Role (r_id) on delete restrict on update restrict;
 
 #用户表数据插入
-insert into Users(u_id,u_name,u_sex,u_identity,u_wholePoints) values(1,'王大哥','男','教授',1);
-insert into Users(u_id,u_name,u_sex,u_identity,u_wholePoints) values(2,'赵大哥','男','讲师',2);
-insert into Users(u_id,u_name,u_sex,u_identity,u_wholePoints) values(3,'钱大哥','男','博士',0);
-insert into Users(u_id,u_name,u_sex,u_identity,u_wholePoints) values(4,'孙大哥','男','秘书',3);
-insert into Users(u_id,u_name,u_sex,u_identity,u_wholePoints) values(5,'李大哥','男','秘书',0);
+insert into Users(u_id,u_name,u_sex,u_identity,u_wholePoints) values(1,'周杰伦','男','教授',1);
+insert into Users(u_id,u_name,u_sex,u_identity,u_wholePoints) values(2,'桂纶镁','女','副教授',0);
+insert into Users(u_id,u_name,u_sex,u_identity,u_wholePoints) values(3,'桐原亮司','男','讲师',0);
+insert into Users(u_id,u_name,u_sex,u_identity,u_wholePoints) values(4,'唐泽雪穗','女','研究实习员',3);
+insert into Users(u_id,u_name,u_sex,u_identity,u_wholePoints) values(6,'雷东宝','男','助教',0);
+insert into Users(u_id,u_name,u_sex,u_identity,u_wholePoints) values(7,'梁思申','女','助教',0);
+insert into Users(u_id,u_name,u_sex,u_identity,u_wholePoints) values(8,'李诞','男','教授',1);
+insert into Users(u_id,u_name,u_sex,u_identity,u_wholePoints) values(9,'赵兴','男','副教授',1);
+insert into Users(u_id,u_name,u_sex,u_identity,u_wholePoints) values(10,'王昱珩','男','讲师',0);
 
 #课题表数据插入
-insert into Kyxm(k_id,k_name,k_category,k_score) values(1,'项目名称1','著作',1);
-insert into Kyxm(k_id,k_name,k_category,k_score) values(2,'项目名称2','著作',1);
-insert into Kyxm(k_id,k_name,k_category,k_score) values(3,'项目名称3','著作',3);
-insert into Kyxm(k_id,k_name,k_category,k_score) values(4,'项目名称4','著作',1);
-insert into Kyxm(k_id,k_name,k_category,k_score) values(5,'项目名称5','著作',2);
+insert into Kyxm(k_id,k_name,k_category,k_score) values(1,'ARCS动机模型在建构教学设计中的应用','著作',1);
+insert into Kyxm(k_id,k_name,k_category,k_score) values(2,'农村小学有效课堂教学策略研究','论文',1);
+insert into Kyxm(k_id,k_name,k_category,k_score) values(3,'宇宙里面的十万个脑洞','艺术类作品',3);
+insert into Kyxm(k_id,k_name,k_category,k_score) values(4,'关于自由落体重力加速度的亲身测量研究','专利',1);
+insert into Kyxm(k_id,k_name,k_category,k_score) values(5,'大IP的运作成效','成果转化',2);
+insert into Kyxm(k_id,k_name,k_category,k_score) values(6,'影视里的一千碗鸡汤','著作',1);
+insert into Kyxm(k_id,k_name,k_category,k_score) values(7,'社会心理的广泛影响','学术活动',1);
+insert into Kyxm(k_id,k_name,k_category,k_score) values(8,'蒙娜丽莎的哭泣','艺术类作品',3);
+insert into Kyxm(k_id,k_name,k_category,k_score) values(9,'大江东去','文学创作作品',1);
+insert into Kyxm(k_id,k_name,k_category,k_score) values(10,'不能说的秘密Secret','文学创作作品',1);
+
 
 #角色表数据插入
 insert into Role(r_id,r_role) values(1,'ROLE_ADMIN');

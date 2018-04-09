@@ -14,5 +14,6 @@ public class SecurityLoginFailHandler implements AuthenticationFailureHandler {
 	public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,
 			AuthenticationException exception) throws IOException, ServletException {
 		// 登陆失败后要做的事情
+		response.getWriter().print("login failed!");
 	}
 }

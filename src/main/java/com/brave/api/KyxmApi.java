@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.brave.entity.Kyxm;
-import com.brave.entity.Visit;
 import com.brave.service.KyxmDaoService;
 @RestController
 public class KyxmApi {

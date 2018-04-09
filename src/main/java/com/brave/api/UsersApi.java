@@ -1,6 +1,8 @@
 package com.brave.api;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -63,5 +65,16 @@ public class UsersApi {
 	@RequestMapping(value = "/api/users/{u_name}", method = RequestMethod.DELETE)
 	public void deleteUsers(@PathVariable("u_name") String u_name) {
 		usersDaoService.deleteUsers(u_name);
+	}
+	
+	//用户和管理员-积分统计模块
+	@RequestMapping(value = "/api/users/getStatisticsOfScore", method = RequestMethod.GET,  produces = "application/json; charset=UTF-8")
+	public Map<String,Integer> getStatisticsOfScore() {
+		Map<String,Integer> store = new HashMap<String,Integer>();
+		List<Users> storeUsers = usersDaoService.getAllUsers();
+		for(Users temp : storeUsers){
+			store.put(temp.getU_name(), temp.getU_wholePoints());
+		}
+		return store;
 	}
 }

@@ -2,15 +2,18 @@
 <html>
 <head>
 	<meta charset="UTF-8">
-	<title>Insert title here</title>
+	<title>科研教学成果管理系统</title>
 	<!--jQuery引用-->
 	<script src="files/js/jquery-3.3.1.js"></script>
 	<!-- vue.js core -->
 	<script src="https://cdn.bootcss.com/vue/2.4.2/vue.min.js"></script>
-	<!-- 引入样式 -->
+	<!-- 引入element-ui样式与组件 -->
 	<link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
-	<!-- 引入组件库 -->
 	<script src="https://unpkg.com/element-ui/lib/index.js"></script>
+	<!--引入chartist.js核心库-->
+	<script type="text/javascript" src="//cdn.jsdelivr.net/chartist.js/latest/chartist.min.js"></script>
+	<link href="//cdn.jsdelivr.net/chartist.js/latest/chartist.min.css" rel="stylesheet" type="text/css" />
+	<!--引入自定义库-->
 	<link href="files/css/my.css" rel="stylesheet" type="text/css" />
 	<script src="files/js/my.js"></script>
 </head>
@@ -27,15 +30,15 @@
 							class="el-menu-vertical-demo"
 							@open="handleOpen"
 							@close="handleClose">
-							<el-menu-item index="1" @click="showMyInfoElement()">
+							<el-menu-item index="1" @click="showMyInfoElement">
 								<i class="el-icon-document"></i>
 								<span slot="title">个人信息</span>
 							</el-menu-item>
-							<el-menu-item index="2" @click="showMyClassElement()">
+							<el-menu-item index="2" @click="showMyClassElement">
 								<i class="el-icon-setting"></i>
 								<span slot="title">我的课题</span>
 							</el-menu-item>
-							<el-menu-item index="3" @click="showClassSquareElement()">
+							<el-menu-item index="3" @click="showClassSquareElement">
 								<i class="el-icon-menu"></i>
 								<span slot="title">全部课题</span>
 							</el-menu-item>
@@ -43,7 +46,11 @@
 								<i class="el-icon-location"></i>
 								<span slot="title">搜索课题</span>
 							</el-menu-item>
-							<el-menu-item index="5" @click="logout()">
+							<el-menu-item index="5" @click="showStatisticsOfScoreUsers">
+								<i class="el-icon-location"></i>
+								<span slot="title">积分统计</span>
+							</el-menu-item>
+							<el-menu-item index="6" @click="logout">
 								<i class="el-icon-document"></i>
 								<span slot="title">用户注销</span>
 							</el-menu-item>
@@ -140,6 +147,11 @@
 					</div>
 					<!--搜索区域end-->
 
+					<!--积分统计模块start-->
+					<div id="statisticsOfScoreSection" class="ct-chart ct-golden-section" style="display: none" align="center">
+					</div>
+					<!--积分统计模块end-->
+
 					<!--我的信息start-->
 					<div id="myInfo" style="display: none">
 						<el-form :label-position="labelPosition" :model="myInfoFormData" label-width="80px">
@@ -187,12 +199,6 @@
 					<!--我的信息end-->
 				</el-main>
 
-				<el-footer>
-					<div id="pageDivide" style="display: none">
-						<el-pagination background layout="prev, pager, next" :total="1000">
-						</el-pagination>
-					</div>
-				</el-footer>
 			</el-container>
 		</el-container>
 	</el-container>

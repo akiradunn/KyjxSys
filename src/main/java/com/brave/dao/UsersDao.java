@@ -30,4 +30,7 @@ public interface UsersDao {
 	
 	@Update("update users set u_name=#{u_name},u_sex=#{u_sex} where u_id=#{u_id}")
 	public void updateUsers(@Param("u_id")int u_id, @Param("u_name")String u_name, @Param("u_sex")String u_sex);
+
+	@Update("update users set u_wholePoints = #{u_wholePoints} where u_id=#{u_id}")
+	public void updateUsersPoints(@Param("u_id")int u_id,@Param("u_wholePoints")int u_wholePoints);
 }

@@ -9,9 +9,12 @@ $.ajax({
 		data: $('#loginForm').serialize(), // 序列化表单值  
 		async: true,
 		success: function(result) { //成功
-			if (result == "success") {
+			console.log(result);
+			if (result == "ROLE_ADMIN") {
+				window.location.href = "/admin.html";
+			}else if(result == "ROLE_USER"){
 				window.location.href = "/main.html";
-			} else {
+			}else{
 				var warning = document.getElementById('reminder');
 				warning.innerHTML = "账号或密码错误";
 				warning.style.color = "red";
@@ -30,6 +33,7 @@ function chooseShow(show) { //页面切换
 		document.getElementById("classSquare").style.display = "none";
 		document.getElementById("searchRegion").style.display = "none";
 		document.getElementById("searchResults").style.display = "none";
+		document.getElementById("statisticsOfScoreSection").style.display = "none";
 		document.getElementById(show).style.display = "";
 	}
 }
@@ -64,7 +68,6 @@ function saveMyInfo() {//用户保存个人信息
 		 data: vueMain.myInfoFormData,
 		 success: function(retResult) { //成功
 		 	vueMain.myInfoFormData = retResult;
-		 	window.location.href='/logout';
 		 },
 		 error: function() {
 		 	alert("update failed");
@@ -181,8 +184,43 @@ function searchKyxm() {
 }
 //搜索课题模块end
 
-//-------------------------用户模块end---------------------------
+//积分统计模块start
+function showStatisticsOfScoreUsers() {
+	chooseShow("statisticsOfScoreSection");
+	$.ajax({
+		 type: "GET", //提交的方法
+		 url: "/api/users/getStatisticsOfScore", //提交的地址 
+		 async: true,
+		 success: function(retResult) { //成功
+		 	//返回的retResult的类型为一个json数组,每一个json对象都包含u_name属性和u_wholescore属性
+		 	var json = retResult;
+		 	var keyArray = new Array();
+		 	var valueArray = new Array();
+		 	var i = 0;
+		 	for(var key in json){
+		 		keyArray[i] = key;
+		 		valueArray[i++] = json[key];
+		 	}
+		 	new Chartist.Line('.ct-chart', {
+		 		labels: keyArray,
+		 		series: [
+		 		valueArray
+		 		]
+		 	},{
+		 		width: 800,
+		 		height: 500
+		 	});
+		 	console.log("请求成功!");
+		 },
+		 error: function() {
+		 	console.log("请求积分统计出错");
+		 }
+		});
+}
+//积分统计模块end
 
+
+//-------------------------用户模块end---------------------------
 
 
 
@@ -198,6 +236,7 @@ function chooseShowAdmin(show) { //页面切换
 		document.getElementById("editVisitSection").style.display = "none";
 		document.getElementById("kyxmListSection").style.display = "none";
 		document.getElementById("editKyxmSection").style.display = "none";
+		document.getElementById("statisticsOfScoreSection").style.display = "none";
 		document.getElementById(show).style.display = "";
 	}
 }
@@ -471,7 +510,7 @@ function editKyxm(k_id) {
 }
 function cancelEditKyxm() {
 	chooseShowAdmin("kyxmListSection");
-	vue.markadd = false;
+	vueMain.markadd = false;
 }
 function saveEditKyxm() {
 	$.ajax({
@@ -511,5 +550,41 @@ function addKyxm() {
 	editKyxm(0);//k_id=0表示添加课题的操作
 }
 //课题管理模块end
+
+//积分统计模块start
+function showStatisticsOfScoreAdmin() {
+	chooseShowAdmin("statisticsOfScoreSection");
+	$.ajax({
+		 type: "GET", //提交的方法
+		 url: "/api/users/getStatisticsOfScore", //提交的地址 
+		 async: true,
+		 success: function(retResult) { //成功
+		 	//返回的retResult的类型为一个json数组,每一个json对象都包含u_name属性和u_wholescore属性
+		 	var json = retResult;
+		 	var keyArray = new Array();
+		 	var valueArray = new Array();
+		 	var i = 0;
+		 	for(var key in json){
+		 		keyArray[i] = key;
+		 		valueArray[i++] = json[key];
+		 	}
+		 	new Chartist.Line('.ct-chart', {
+		 		labels: keyArray,
+		 		series: [
+		 		valueArray
+		 		]
+		 	},{
+		 		width: 800,
+		 		height: 500
+		 	});
+		 	console.log("请求成功!");
+		 },
+		 error: function() {
+		 	console.log("请求积分统计出错");
+		 }
+		});
+}
+//积分统计模块end
+
 
 //-------------------------管理员模块end---------------------------
