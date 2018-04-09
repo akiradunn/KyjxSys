@@ -44,8 +44,8 @@
 									<span>信息管理</span>
 								</template>
 								<el-menu-item-group>
-									<el-menu-item index="2-1">用户管理</el-menu-item>
-									<el-menu-item index="2-2">课题管理</el-menu-item>
+									<el-menu-item index="2-1" @click="showVisitListSection">用户管理</el-menu-item>
+									<el-menu-item index="2-2" @click="showKyxmListSection">课题管理</el-menu-item>
 								</el-menu-item-group>
 							</el-submenu>
 							<el-submenu index="3">
@@ -58,7 +58,7 @@
 									<el-menu-item index="3-2">个人积分</el-menu-item>
 								</el-menu-item-group>
 							</el-submenu>
-							<el-menu-item index="4">
+							<el-menu-item index="4" @click="logout()">
 								<i class="el-icon-setting"></i>
 								<span slot="title">用户注销</span>
 							</el-menu-item>
@@ -161,17 +161,155 @@
 						</template>
 					</div>
 					<!--审批课题积分end-->
-				</el-main>
 
-				<el-footer>
-					<div id="pageDivide" style="display: none">
-						<el-pagination background layout="prev, pager, next" :total="1000">
-						</el-pagination>
+					<!--用户管理模块-->
+					<!--用户管理模块-查看模块start-->
+					<div id="visitListSection" style="display: none">
+						<el-table :data="visitTableData"  border style="width: 100%">
+							<el-table-column header-align="center" label="用户名">
+								<template scope="props">
+									<el-popover trigger="hover" placement="top">
+										<p>用户编号: {{ props.row.u_id }} </p>
+										<p>用户名: {{ props.row.username }}</p>
+										<p>密码: {{ props.row.password }}</p>
+										<div slot="reference" class="name-wrapper">
+											<el-tag size="medium">{{ props.row.username }}</el-tag>
+										</div>
+									</el-popover>
+								</template>
+							</el-table-column>
+							<el-table-column header-align="center" label="操作">
+								<template scope="props">
+									<el-button size="mini" @click="editVisit(props.row.u_id,props.row.username)">编辑</el-button>
+									<el-button size="mini" type="danger" @click="deleteVisit(props.row.u_id,props.row.username)">删除</el-button>
+								</template>
+							</el-table-column>
+						</el-table>
+						<el-row :gutter="20">
+							<el-col :span="12" :offset="6"><div class="grid-content bg-purple">
+								<el-button type="primary" @click="addVisit()">添加用户</el-button>
+							</div></el-col>
+						</el-row>
 					</div>
-				</el-footer>
-			</el-container>
-		</el-container>
+					<!--用户管理模块-查看模块end-->
+
+					<!--用户管理模块-操作模块start-->
+					<div id="editVisitSection" style="display: none">
+						<el-form :label-position="labelPosition" :model="visitItemFormData" label-width="80px">
+							<el-form-item color="white">
+								<el-row :gutter="10">
+									<el-col :span="2" :offset="20"><div class="grid-content bg-purple">
+										<el-button type="warning" @click="cancelEditVisit">取消</el-button>
+									</div></el-col>
+									<el-col :span="2"><div class="grid-content bg-purple">
+										<el-button type="primary" @click="saveEditVisit()">保存</el-button>
+									</div>
+								</el-col>
+							</el-row>
+						</el-form-item>
+						<el-form-item label="用户编号">
+							<el-input v-if="markadd" v-model="visitItemFormData.u_id"></el-input>
+							<span v-else>{{visitItemFormData.u_id}}</span>
+						</el-form-item>
+						<el-form-item label="用户名">
+							<el-input v-model="visitItemFormData.username"></el-input>
+						</el-form-item>
+						<el-form-item label="密码">
+							<el-input v-model="visitItemFormData.password"></el-input>
+						</el-form-item>
+					</el-form>
+				</div>
+				<!--用户管理模块-操作模块end-->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+				<!--课题管理模块-操作模块start-->
+				<!--查看课题模块start-->
+				<div id="kyxmListSection" style="display: none">
+					<el-table :data="kyxmListTableData"  border style="width: 100%">
+						<el-table-column header-align="center" label="课题名称">
+							<template scope="props">
+								<el-popover trigger="hover" placement="top">
+									<p>课题编号: {{ props.row.k_id }}</p>
+									<p>课题类别: {{ props.row.k_category }}</p>
+									<p>课题积分: {{ props.row.k_score }}</p>
+									<div slot="reference" class="name-wrapper">
+										<el-tag size="medium">{{ props.row.k_name }}</el-tag>
+									</div>
+								</el-popover>
+							</template>
+						</el-table-column>
+						<el-table-column header-align="center" label="操作">
+							<template scope="props">
+								<el-button size="mini" @click="editKyxm(props.row.k_id)">编辑</el-button>
+								<el-button size="mini" type="danger" @click="deleteKyxm(props.row.k_id)">删除</el-button>
+							</template>
+						</el-table-column>
+					</el-table>
+					<el-row :gutter="20">
+						<el-col :span="12" :offset="6"><div class="grid-content bg-purple">
+							<el-button type="primary" @click="addKyxm()">添加课题</el-button>
+						</div></el-col>
+					</el-row>
+				</div>
+				<!--查看课题模块end-->
+
+				<!--课题管理模块-操作课题模块start-->
+				<div id="editKyxmSection" style="display: none">
+					<el-form :label-position="labelPosition" :model="kyxmItemFormData" label-width="80px">
+						<el-form-item color="white">
+							<el-row :gutter="10">
+								<el-col :span="2" :offset="20"><div class="grid-content bg-purple">
+									<el-button type="warning" @click="cancelEditKyxm()">取消</el-button>
+								</div></el-col>
+								<el-col :span="2"><div class="grid-content bg-purple">
+									<el-button type="primary" @click="saveEditKyxm()">保存</el-button>
+								</div>
+							</el-col>
+						</el-row>
+					</el-form-item>
+					<el-form-item label="课题编号">
+						<el-input v-if="markadd" v-model="kyxmItemFormData.k_id"></el-input>
+						<span v-else>{{kyxmItemFormData.k_id}}</span>
+					</el-form-item>
+					<el-form-item label="课题名称">
+						<el-input v-model="kyxmItemFormData.k_name"></el-input>
+					</el-form-item>
+					<el-form-item label="课题类别">
+						<el-input v-model="kyxmItemFormData.k_category"></el-input>
+					</el-form-item>
+					<el-form-item label="课题积分">
+						<el-input v-model="kyxmItemFormData.k_score"></el-input>
+					</el-form-item>
+				</el-form>
+			</div>
+			<!--课题管理模块-操作课题模块end-->
+
+			<!---->
+		</el-main>
+
+		<el-footer>
+			<div id="pageDivide" style="display: none">
+				<el-pagination background layout="prev, pager, next" :total="1000">
+				</el-pagination>
+			</div>
+		</el-footer>
 	</el-container>
+</el-container>
+</el-container>
 </div>
 
 
@@ -182,7 +320,14 @@ var vueMain = new Vue({
 	data: {
 		applyingKyxmTableData: [],//审核课题立项tabledata
 		applyingCompletingKyxmTableData: [],//审核课题结项tabledata
-		applyingScoreKyxmTableData: []
+		applyingScoreKyxmTableData: [],//审核课题积分tabledata
+		visitTableData:[],//visit用户列表
+		labelPosition: 'left',
+		visitItemFormData: '',//记录正在编辑的visitItem的信息
+		visitItem_oldusername: '',//记录正在编辑的visitItem的原始用户名
+		markadd:false,//标志是否是添加visit
+		kyxmListTableData: [],//课题管理模块的课题列表tabledata
+		kyxmItemFormData: '',//记录正在编辑的kyxmItem的信息
 	},
 	methods: {
 		handleOpen(key, keyPath) {

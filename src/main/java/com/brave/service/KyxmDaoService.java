@@ -45,4 +45,16 @@ public class KyxmDaoService implements KyxmDao {
 		return kyxmDao.getKyxmFromId(k_id);
 	}
 
+	@Override
+	public void updateKyxm(int k_id, String k_name, String k_category, int k_score) {
+		// TODO Auto-generated method stub
+		kyxmDao.updateKyxm(k_id, k_name, k_category, k_score);
+	}
+
+	@Override
+	public void deleteSpecifiedKyxm(int k_id) {
+		// TODO Auto-generated method stub
+		kyxmDao.deleteSpecifiedKyxm(k_id);
+	}
+
 }
