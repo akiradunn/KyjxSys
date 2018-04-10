@@ -2,29 +2,65 @@
  * element-ui -version my.js
  */
 //通用模块start
-function checkLogin() { //这里出错,没有细心把每一步做好,经常容易每一小步就出纰漏,函数定义}没有加对
-$.ajax({
+function checkLogin() {//登陆验证模块
+	var username = vueMain.username;  
+	var password = vueMain.password;  
+	if(username == '' || password == ''){  
+		vueMain.$message({  
+			message : '账号或密码不能为空！',  
+			type : 'error'  
+		});
+		return;  
+	}
+	$.ajax({
 		type: "POST", //提交的方法
 		url: "/verifyLogin", //提交的地址 
-		data: $('#loginForm').serialize(), // 序列化表单值  
+		data: {
+			username : vueMain.username,
+			password : vueMain.password
+		}, 
 		async: true,
-		success: function(result) { //成功
-			console.log(result);
-			if (result == "ROLE_ADMIN") {
+		success: function(retResult) { //成功
+			console.log(retResult);
+			if (retResult == "ROLE_ADMIN") {
+				vueMain.$message({
+					message: '登陆成功！',
+					type: 'success'
+				});
 				window.location.href = "/admin.html";
-			}else if(result == "ROLE_USER"){
+			}else if(retResult == "ROLE_USER"){
+				vueMain.$message({
+					message: '登陆成功！',
+					type: 'success'
+				});
 				window.location.href = "/main.html";
 			}else{
-				var warning = document.getElementById('reminder');
-				warning.innerHTML = "账号或密码错误";
-				warning.style.color = "red";
+				vueMain.$message({  
+					message : '账号或密码错误！',  
+					type : 'error'  
+				});
+				return;
 			}
 		},
-		error: function(result) { //失败的话
-			alert("网络问题!");
+		error: function(retResult) { //失败的话
+			vueMain.$message({  
+				message : '请求出错！',
+				type : 'error'  
+			});
+			return;  
 		}
 	});
 }
+function logout() {//退出登录
+	window.location.href='/logout'
+}
+//通用模块end
+
+
+
+
+
+//-------------------------用户模块start---------------------------
 function chooseShow(show) { //页面切换
 	var status = document.getElementById(show).style.display;
 	if (status == "none") {
@@ -37,11 +73,6 @@ function chooseShow(show) { //页面切换
 		document.getElementById(show).style.display = "";
 	}
 }
-function logout() {//退出登录
-	window.location.href='/logout'
-}
-//通用模块end
-//-------------------------用户模块start---------------------------
 //我的信息模块start
 function showMyInfoElement() {//用户查看个人信息
 	chooseShow("myInfo");
@@ -210,7 +241,7 @@ function showStatisticsOfScoreUsers() {
 		 		width: 800,
 		 		height: 500
 		 	});
-		 	console.log("请求成功!");
+		 	console.log("积分统计!");
 		 },
 		 error: function() {
 		 	console.log("请求积分统计出错");
@@ -218,9 +249,8 @@ function showStatisticsOfScoreUsers() {
 		});
 }
 //积分统计模块end
-
-
 //-------------------------用户模块end---------------------------
+
 
 
 
@@ -259,31 +289,31 @@ function showApplyingKyxmListSection() {//切换页面至审核课题立项模�
 	chooseShowAdmin("applyingKyxmListSection");
 	admin_getApplyingKyxmList();
 }
-function passApplyingKyxm(k_id) {
+function passApplyingKyxm(u_id,k_id) {
 	$.ajax({
 		type:"PUT",
-		url: "/api/userkyxm/passApplyingKyxm/" + k_id,
+		url: "/api/userkyxm/passApplyingKyxm/" + u_id + "&&" + k_id,
 		async: true,
 		success: function(retResult) {
 			vueMain.applyingKyxmTableData = retResult;
-			console.log("通过课题:"+k_id+"的立项申请!");
+			console.log("通过用户"+u_id+"的课题:"+k_id+"的立项申请!");
 		},
 		error: function(retResult) {
-			console.log("课题:"+k_id+"的立项申请处理异常!");
+			console.log("用户"+u_id+"的课题:"+k_id+"的立项申请处理异常!");
 		}
 	})
 }
-function rejectApplyingKyxm(k_id) {
+function rejectApplyingKyxm(u_id,k_id) {
 	$.ajax({
 		type:"PUT",
-		url: "/api/userkyxm/rejectApplyingKyxm/" + k_id,
+		url: "/api/userkyxm/rejectApplyingKyxm/" + u_id + "&&" + k_id,
 		async: true,
 		success: function(retResult) {
 			vueMain.applyingKyxmTableData = retResult;
-			console.log("拒绝课题:"+k_id+"的立项申请!");
+			console.log("拒绝用户"+u_id+"的课题:"+k_id+"的立项申请!");
 		},
 		error: function(retResult) {
-			console.log("课题:"+k_id+"的立项申请处理异常!");
+			console.log("用户"+u_id+"的课题:"+k_id+"的立项申请处理异常!");
 		}
 	})
 }
@@ -307,31 +337,31 @@ function showApplyingCompletingKyxmListSection() {//切换页面至审核课题�
 	chooseShowAdmin("applyingCompletingKyxmListSection");
 	admin_getApplyingCompletingKyxmList();
 }
-function passApplyingCompletingKyxm(k_id) {
+function passApplyingCompletingKyxm(u_id,k_id) {
 	$.ajax({
 		type:"PUT",
-		url: "/api/userkyxm/passApplyingCompletingKyxm/" + k_id,
+		url: "/api/userkyxm/passApplyingCompletingKyxm/" + u_id + "&&" + k_id,
 		async: true,
 		success: function(retResult) {
 			vueMain.applyingCompletingKyxmTableData = retResult;
-			console.log("通过课题:"+k_id+"的结项申请!");
+			console.log("通过用户"+u_id+"课题:"+k_id+"的结项申请!");
 		},
 		error: function(retResult) {
-			console.log("课题:"+k_id+"的结项申请处理异常!");
+			console.log("用户"+u_id+"课题:"+k_id+"的结项申请处理异常!");
 		}
 	})
 }
-function rejectApplyingCompletingKyxm(k_id) {
+function rejectApplyingCompletingKyxm(u_id,k_id) {
 	$.ajax({
 		type:"PUT",
-		url: "/api/userkyxm/rejectApplyingCompletingKyxm/" + k_id,
+		url: "/api/userkyxm/rejectApplyingCompletingKyxm/" + u_id + "&&" + k_id,
 		async: true,
 		success: function(retResult) {
 			vueMain.applyingCompletingKyxmTableData = retResult;
-			console.log("拒绝课题:"+k_id+"的结项申报申请!");
+			console.log("拒绝用户"+u_id+"课题:"+k_id+"的结项申报申请!");
 		},
 		error: function(retResult) {
-			console.log("课题:"+k_id+"的结项申请处理异常!");
+			console.log("用户"+u_id+"课题:"+k_id+"的结项申请处理异常!");
 		}
 	})
 }
@@ -355,31 +385,31 @@ function showApplyingScoreKyxmListSection() {//切换页面至审核课题积分
 	chooseShowAdmin("applyingScoreKyxmListSection");
 	admin_getApplyingScoreKyxmList();
 }
-function passApplyingScoreKyxm(k_id) {
+function passApplyingScoreKyxm(u_id,k_id) {
 	$.ajax({
 		type:"PUT",
-		url: "/api/userkyxm/passApplyingScoreKyxm/" + k_id,
+		url: "/api/userkyxm/passApplyingScoreKyxm/" + u_id + "&&" + k_id,
 		async: true,
 		success: function(retResult) {
 			vueMain.applyingScoreKyxmTableData = retResult;
-			console.log("通过课题:"+k_id+"的积分申请!");
+			console.log("通过用户"+u_id+"课题:"+k_id+"的积分申请!");
 		},
 		error: function(retResult) {
-			console.log("课题:"+k_id+"的积分申请处理异常!");
+			console.log("用户"+u_id+"课题:"+k_id+"的积分申请处理异常!");
 		}
 	})
 }
-function rejectApplyingScoreKyxm(k_id) {
+function rejectApplyingScoreKyxm(u_id,k_id) {
 	$.ajax({
 		type:"PUT",
-		url: "/api/userkyxm/rejectApplyingScoreKyxm/" + k_id,
+		url: "/api/userkyxm/rejectApplyingScoreKyxm/" + u_id + "&&" + k_id,
 		async: true,
 		success: function(retResult) {
 			vueMain.applyingCompletingKyxmTableData = retResult;
-			console.log("拒绝课题:"+k_id+"的结项申报申请!");
+			console.log("拒绝用户"+u_id+"课题:"+k_id+"的结项申报申请!");
 		},
 		error: function(retResult) {
-			console.log("课题:"+k_id+"的结项申请处理异常!");
+			console.log("用户"+u_id+"课题:"+k_id+"的结项申请处理异常!");
 		}
 	})
 }
@@ -428,7 +458,7 @@ function cancelEditVisit() {
 }
 function saveEditVisit() {//markadd为true表示添加状态,用户访问visitListSection页面是通过add函数进入,false表示为更新状态,
 						  //用户是通过edit函数进入visitListSection页面
-	$.ajax({
+						  $.ajax({
 		 type: "PUT", //提交的方法
 		 url: "/api/visit/saveEditVisit&&"+vueMain.visitItem_oldusername+"&&"+vueMain.markadd, //提交的地址 
 		 async: true,
@@ -446,10 +476,10 @@ function saveEditVisit() {//markadd为true表示添加状态,用户访问visitLi
 		 	console.log("保存账号信息失败!");
 		 }
 		});
-}
+						}
 
-function deleteVisit(u_id,username) {
-	$.ajax({
+						function deleteVisit(u_id,username) {
+							$.ajax({
 		 type: "DELETE", //提交的方法
 		 url: "/api/visit/deleteVisit/"+u_id+"&&"+username, //提交的地址 
 		 async: true,
@@ -461,13 +491,13 @@ function deleteVisit(u_id,username) {
 		 	console.log("删除账号信息失败!");
 		 }
 		});
-}
+						}
 
-function addVisit() {
-	vueMain.markadd = true;
-	vueMain.visitItemFormData = {"u_id":0,"r_id":2,"username":"请输入新的用户名","password":"请输入新的密码"};
-	chooseShowAdmin("editVisitSection");
-}
+						function addVisit() {
+							vueMain.markadd = true;
+							vueMain.visitItemFormData = {"u_id":0,"r_id":2,"username":"请输入新的用户名","password":"请输入新的密码"};
+							chooseShowAdmin("editVisitSection");
+						}
 //用户模块end
 
 
@@ -577,7 +607,7 @@ function showStatisticsOfScoreAdmin() {
 		 		width: 800,
 		 		height: 500
 		 	});
-		 	console.log("请求成功!");
+		 	console.log("积分统计!");
 		 },
 		 error: function() {
 		 	console.log("请求积分统计出错");
@@ -585,6 +615,4 @@ function showStatisticsOfScoreAdmin() {
 		});
 }
 //积分统计模块end
-
-
 //-------------------------管理员模块end---------------------------

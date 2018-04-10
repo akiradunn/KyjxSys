@@ -10,8 +10,6 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 
-import com.brave.service.MyUserDetailsService;
-
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
@@ -29,9 +27,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	protected void configure(HttpSecurity http) throws Exception {
 		http.authorizeRequests().antMatchers("/verifyLogin","/login.html","/api/**").permitAll().anyRequest()
 				.authenticated()
-				// .anyRequest().permitAll()
 				.and().formLogin().loginPage("/login.html")
-				// .loginPage("/main.html")
 				.loginProcessingUrl("/verifyLogin").successHandler(authenticationSuccessHandler)
 				.failureHandler(authenticationFailureHandler).and().csrf().disable().logout().permitAll();
 	}

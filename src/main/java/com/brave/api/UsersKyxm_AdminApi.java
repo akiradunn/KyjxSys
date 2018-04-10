@@ -11,6 +11,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.brave.entity.Kyxm;
@@ -52,11 +53,8 @@ public class UsersKyxm_AdminApi {
 		}
 		
 	//管理员通过课题立项申请-审批课题立项模块
-	@RequestMapping(value = "/api/userkyxm/passApplyingKyxm/{k_id}", method = RequestMethod.PUT)
-	public List<ShowKyxms> passApplyingKyxm(@PathVariable("k_id") int k_id){
-		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		String username = auth.getName();
-		int u_id = visitDaoService.getVisitUID(username);
+	@RequestMapping(value = "/api/userkyxm/passApplyingKyxm/{u_id}&&{k_id}", method = RequestMethod.PUT)
+	public List<ShowKyxms> passApplyingKyxm(@PathVariable("u_id") int u_id,@PathVariable("k_id") int k_id){
 		SimpleDateFormat simpleDateFormat = new java.text.SimpleDateFormat("yyyy-MM-dd");
 	    Calendar calendar = java.util.Calendar.getInstance();
 	    try {
@@ -74,26 +72,20 @@ public class UsersKyxm_AdminApi {
 		return Transform.transfromUsersKyxmList(store, kyxmDaoService);
 	}
 	//管理员通过课题结项申请-审批课题结项模块
-	@RequestMapping(value = "/api/userkyxm/passApplyingCompletingKyxm/{k_id}", method = RequestMethod.PUT)
-	public List<ShowKyxms> passApplyingCompletingKyxm(@PathVariable("k_id") int k_id){
-		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		String username = auth.getName();
-		int u_id = visitDaoService.getVisitUID(username);
+	@RequestMapping(value = "/api/userkyxm/passApplyingCompletingKyxm/{u_id}&&{k_id}", method = RequestMethod.PUT)
+	public List<ShowKyxms> passApplyingCompletingKyxm(@PathVariable("u_id") int u_id,@PathVariable("k_id") int k_id){
 		UsersKyxm check = usersKyxmDaoService.getUsersKyxmFromUidKid(u_id, k_id);
-		if(check.getK_status()=="待审核课题结项" || "待审核课题结项".equals(check.getK_status())){
+		if(check!=null&&(check.getK_status()=="待审核课题结项" || "待审核课题结项".equals(check.getK_status()))){
 			usersKyxmDaoService.operateApplyingKyxm(u_id, k_id, "已结项", check.getK_setTime(), check.getK_endTime(), false, true);;
 		}
 		List<UsersKyxm> store = usersKyxmDaoService.getApplyingKyxmList("待审核课题立项");
 		return Transform.transfromUsersKyxmList(store, kyxmDaoService);
 	}
 	//管理员通过课题积分申请-审批课题积分模块
-		@RequestMapping(value = "/api/userkyxm/passApplyingScoreKyxm/{k_id}", method = RequestMethod.PUT)
-		public List<ShowKyxms> passApplyingScoreKyxm(@PathVariable("k_id") int k_id){
-			Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-			String username = auth.getName();
-			int u_id = visitDaoService.getVisitUID(username);
+		@RequestMapping(value = "/api/userkyxm/passApplyingScoreKyxm/{u_id}&&{k_id}", method = RequestMethod.PUT)
+		public List<ShowKyxms> passApplyingScoreKyxm(@PathVariable("u_id") int u_id,@PathVariable("k_id") int k_id){
 			UsersKyxm check = usersKyxmDaoService.getUsersKyxmFromUidKid(u_id, k_id);
-			if((check.getK_status()=="待审核积分申报" || "待审核积分申报".equals(check.getK_status()))&&!check.isK_scoreApplied()){
+			if(check!=null&&(check.getK_status()=="待审核积分申报" || "待审核积分申报".equals(check.getK_status()))&&!check.isK_scoreApplied()){
 				Users tempUsers = usersDaoService.getUsersFromId(u_id);
 				Kyxm tempKyxm = kyxmDaoService.getKyxmFromId(k_id);
 				usersDaoService.updateUsersPoints(u_id, tempUsers.getU_wholePoints()+tempKyxm.getK_score());
@@ -103,36 +95,27 @@ public class UsersKyxm_AdminApi {
 			return Transform.transfromUsersKyxmList(store, kyxmDaoService);
 		}
 	//管理员拒绝课题立项申请-审批课题立项模块
-		@RequestMapping(value = "/api/userkyxm/rejectApplyingKyxm/{k_id}", method = RequestMethod.PUT)
-		public List<ShowKyxms> rejectApplyingKyxm(@PathVariable("k_id") int k_id){
-			Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-			String username = auth.getName();
-			int u_id = visitDaoService.getVisitUID(username);
+		@RequestMapping(value = "/api/userkyxm/rejectApplyingKyxm/{u_id}&&{k_id}", method = RequestMethod.PUT)
+		public List<ShowKyxms> rejectApplyingKyxm(@PathVariable("u_id") int u_id,@PathVariable("k_id") int k_id){
 			usersKyxmDaoService.operateApplyingKyxm(u_id, k_id, "拒绝课题立项", null, null, false, false);
 			List<UsersKyxm> store = usersKyxmDaoService.getApplyingKyxmList("待审核课题立项");
 			return Transform.transfromUsersKyxmList(store, kyxmDaoService);
 		}
 		//管理员拒绝课题结项申请-审批课题结项模块
-		@RequestMapping(value = "/api/userkyxm/rejectApplyingCompletingKyxm/{k_id}", method = RequestMethod.PUT)
-		public List<ShowKyxms> rejectApplyingCompletingKyxm(@PathVariable("k_id") int k_id){
-			Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-			String username = auth.getName();
-			int u_id = visitDaoService.getVisitUID(username);
+		@RequestMapping(value = "/api/userkyxm/rejectApplyingCompletingKyxm/{u_id}&&{k_id}", method = RequestMethod.PUT)
+		public List<ShowKyxms> rejectApplyingCompletingKyxm(@PathVariable("u_id") int u_id,@PathVariable("k_id") int k_id){
 			UsersKyxm check = usersKyxmDaoService.getUsersKyxmFromUidKid(u_id, k_id);
-			if(check.getK_status()=="待审核课题结项" || "待审核课题结项".equals(check.getK_status())){
+			if(check!=null&&(check.getK_status()=="待审核课题结项" || "待审核课题结项".equals(check.getK_status()))){
 				usersKyxmDaoService.operateApplyingKyxm(u_id, k_id, "拒绝课题结项", check.getK_setTime(), check.getK_endTime(), false, true);;
 			}
 			List<UsersKyxm> store = usersKyxmDaoService.getApplyingKyxmList("待审核课题结项");
 			return Transform.transfromUsersKyxmList(store, kyxmDaoService);
 		}
 		//管理员拒绝课题积分请-审批课题积分模块
-		@RequestMapping(value = "/api/userkyxm/rejectApplyingScoreKyxm/{k_id}", method = RequestMethod.PUT)
-		public List<ShowKyxms> rejectApplyingScoreKyxm(@PathVariable("k_id") int k_id){
-			Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-			String username = auth.getName();
-			int u_id = visitDaoService.getVisitUID(username);
+		@RequestMapping(value = "/api/userkyxm/rejectApplyingScoreKyxm/{u_id}&&{k_id}", method = RequestMethod.PUT)
+		public List<ShowKyxms> rejectApplyingScoreKyxm(@PathVariable("u_id") int u_id,@PathVariable("k_id") int k_id){
 			UsersKyxm check = usersKyxmDaoService.getUsersKyxmFromUidKid(u_id, k_id);
-			if(check.getK_status()=="待审核积分申报" || "待审核积分申报".equals(check.getK_status())){
+			if(check!=null&&(check.getK_status()=="待审核积分申报" || "待审核积分申报".equals(check.getK_status()))){
 				usersKyxmDaoService.operateApplyingKyxm(u_id, k_id, "拒绝积分申报", check.getK_setTime(), check.getK_endTime(), false, true);;
 			}
 			List<UsersKyxm> store = usersKyxmDaoService.getApplyingKyxmList("待审核积分申报");
