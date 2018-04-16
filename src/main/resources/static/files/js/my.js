@@ -99,6 +99,7 @@ function saveMyInfo() {//用户保存个人信息
 		 data: vueMain.myInfoFormData,
 		 success: function(retResult) { //成功
 		 	vueMain.myInfoFormData = retResult;
+		 	logout();//用户修改完个人信息之后要退出登录
 		 },
 		 error: function() {
 		 	alert("update failed");
@@ -460,7 +461,7 @@ function saveEditVisit() {//markadd为true表示添加状态,用户访问visitLi
 						  //用户是通过edit函数进入visitListSection页面
 						  $.ajax({
 		 type: "PUT", //提交的方法
-		 url: "/api/visit/saveEditVisit&&"+vueMain.visitItem_oldusername+"&&"+vueMain.markadd, //提交的地址 
+		 url: "/api/visit/saveEditVisit/"+vueMain.visitItem_oldusername+"&&"+vueMain.markadd, //提交的地址 
 		 async: true,
 		 data: vueMain.visitItemFormData,//表单的数据在输入后自动获取
 		 success: function(retResult) { //成功
@@ -478,7 +479,7 @@ function saveEditVisit() {//markadd为true表示添加状态,用户访问visitLi
 		});
 						}
 
-						function deleteVisit(u_id,username) {
+function deleteVisit(u_id,username) {
 							$.ajax({
 		 type: "DELETE", //提交的方法
 		 url: "/api/visit/deleteVisit/"+u_id+"&&"+username, //提交的地址 
@@ -491,13 +492,13 @@ function saveEditVisit() {//markadd为true表示添加状态,用户访问visitLi
 		 	console.log("删除账号信息失败!");
 		 }
 		});
-						}
+}
 
-						function addVisit() {
-							vueMain.markadd = true;
-							vueMain.visitItemFormData = {"u_id":0,"r_id":2,"username":"请输入新的用户名","password":"请输入新的密码"};
-							chooseShowAdmin("editVisitSection");
-						}
+function addVisit() {
+	vueMain.markadd = true;
+	vueMain.visitItemFormData = {"u_id":0,"r_id":2,"username":"请输入新的用户名","password":"请输入新的密码"};
+	chooseShowAdmin("editVisitSection");
+}
 //用户模块end
 
 
@@ -545,7 +546,7 @@ function cancelEditKyxm() {
 function saveEditKyxm() {
 	$.ajax({
 		 type: "PUT", //提交的方法
-		 url: "/api/kyxm/saveEditKyxm&&"+vueMain.markadd, //提交的地址 
+		 url: "/api/kyxm/saveEditKyxm/"+vueMain.markadd, //提交的地址 
 		 async: true,
 		 data: vueMain.kyxmItemFormData,
 		 success: function(retResult) { //成功

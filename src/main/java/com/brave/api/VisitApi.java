@@ -23,7 +23,7 @@ public class VisitApi {
 		return visitDaoService.getSpecifiedVisit(u_id, username);
 	}
 	//管理员保存用户账号信息-用户管理模块
-	@RequestMapping(value = "/api/visit/saveEditVisit&&{oldusername}&&{markadd}", method = RequestMethod.PUT)
+	@RequestMapping(value = "/api/visit/saveEditVisit/{oldusername}&&{markadd}", method = RequestMethod.PUT)
 	public List<Visit> saveEditVisit(@RequestParam("u_id") int u_id,@PathVariable("oldusername") String oldusername,@PathVariable("markadd") boolean markadd,@RequestParam("username") String modifiedusername,@RequestParam("password") String password){
 		if(markadd){//添加visit请求状态
 			System.out.println(markadd);

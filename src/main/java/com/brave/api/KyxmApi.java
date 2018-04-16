@@ -45,7 +45,7 @@ public class KyxmApi {
 		return kyxmDaoService.getKyxmFromId(k_id);
 	}
 	//管理员编辑课题信息-管理员课题管理模块,include添加和编辑两个功能
-	@RequestMapping(value = "/api/kyxm/saveEditKyxm&&{markadd}", method = RequestMethod.PUT, produces = "application/json; charset=UTF-8")
+	@RequestMapping(value = "/api/kyxm/saveEditKyxm/{markadd}", method = RequestMethod.PUT, produces = "application/json; charset=UTF-8")
 	public List<Kyxm> saveEditKyxm(@PathVariable("markadd") boolean markadd,@RequestParam("k_id") int k_id,@RequestParam("k_name") String k_name,@RequestParam("k_category") String k_category,@RequestParam("k_score") int k_score) {
 		if(markadd){//添加状态则插入课题
 			System.out.println("add kyxm!");
